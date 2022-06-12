@@ -19,7 +19,6 @@ public class Algo {
         float minFitness = initialFitness;
 
         List<Vehicle> currentSolution = (ArrayList<Vehicle>) (((ArrayList<Vehicle>) initialSolution).clone());
-
         float currentFitness = initialFitness;
 
         int ritcooldown = nitcooldown;
@@ -59,7 +58,7 @@ public class Algo {
                 continue;
             }
 
-            int nmethod = Random.randrange(0, 2);
+            int nmethod = Random.randrange(0, 6);
             switch (nmethod) {
                 case 0:
                     CrossExchange crossExchange = new CrossExchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
@@ -104,10 +103,15 @@ public class Algo {
 
             assert neighbor != null;
 
-            double delta = minFitness - neighbor.getFitness();
-            if (delta > 0 || Math.random() < Math.exp(delta / temperature)) {
-                minSolution = neighbor.getNeighborhood();
-                minFitness = neighbor.getFitness();
+            double delta = neighbor.getFitness() - minFitness;
+            if (delta <= 0 || Math.random() < Math.exp(-delta / temperature)) {
+                currentSolution = neighbor.getNeighborhood();
+                currentFitness = neighbor.getFitness();
+
+                if(currentFitness < minFitness) {
+                    minSolution = currentSolution;
+                    minFitness = currentFitness;
+                }
             }
 
             if (ritcooldown <= 0) {

@@ -141,12 +141,12 @@ public class App {
         // TESTING RECUIT
         List<Route> routes = new ArrayList<>();
 
-        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.75f, 0.00001f, 0.99f, 10000);
+        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.75f, 0.00001f, 0.999f, 10000);
         for(Vehicle vehicle : newSolution) {
             routes.add(vehicle.getRoute());
         }
 
-        double totalDistTabu = 0;
+        double totalDistRes = 0;
 
        for(int i = 0; i < newSolution.size(); i++) {
             //System.out.println("Vehicle "+i+" : ");
@@ -157,12 +157,12 @@ public class App {
 
            //System.out.println("Traveled Distance : "+vehDist);
             //System.out.println("Filled Quantity : "+newSolution.get(i).getQ()+"\n---------------");
-            totalDistTabu += vehDist;
+           totalDistRes += vehDist;
        }
 
         //System.out.println("Position of the deposit : " +deposit.toString());
 
-       System.out.println("total traveled distance = "+totalDistTabu);
+       System.out.println("total traveled distance = " + totalDistRes);
        System.out.println("\nNew Solution : "+newSolution);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

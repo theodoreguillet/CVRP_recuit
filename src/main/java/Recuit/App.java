@@ -101,7 +101,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-        List<Client> clients = App.getInputData("src/main/resources/A3205.txt");
+        List<Client> clients = App.getInputData("src/main/resources/r101.txt");
 
         Client deposit = clients.get(0);
         clients.remove(0);

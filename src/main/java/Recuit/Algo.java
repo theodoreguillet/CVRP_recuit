@@ -59,7 +59,7 @@ public class Algo {
                 continue;
             }
 
-            int nmethod = Random.randrange(0, 6);
+            int nmethod = Random.randrange(0, 2);
             switch (nmethod) {
                 case 0:
                     CrossExchange crossExchange = new CrossExchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);

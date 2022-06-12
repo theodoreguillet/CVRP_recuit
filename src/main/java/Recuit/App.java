@@ -15,7 +15,7 @@ import Graphics.InterfaceGraphique;
 public class App {
 
     static final int qMax = 100;
-    static final float percentageToFill = (float)0.8;
+    static final float percentageToFill = (float)1;
 
     public static List<Client> getInputData(String filePath) {
         List<Client> clientList = new ArrayList<>();
@@ -101,8 +101,7 @@ public class App {
     }
 
     public static void main(String[] args) {
-//        List<Client> clients = App.getInputData("C:\\Users\\User\\OneDrive - etu.univ-lyon1.fr\\Code\\Code\\src\\main\\resources\\A3205.txt");
-        List<Client> clients = App.getInputData("src/main/resources/r101.txt");
+        List<Client> clients = App.getInputData("src/main/resources/A3205.txt");
 
         Client deposit = clients.get(0);
         clients.remove(0);
@@ -142,7 +141,7 @@ public class App {
         // TESTING RECUIT
         List<Route> routes = new ArrayList<>();
 
-        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.5f, 0.0001f, 0.99f, 100000);
+        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.75f, 0.00001f, 0.99f, 10000);
         for(Vehicle vehicle : newSolution) {
             routes.add(vehicle.getRoute());
         }

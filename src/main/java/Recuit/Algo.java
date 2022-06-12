@@ -1,4 +1,4 @@
-package TabuSearch;
+package Recuit;
 
 import Components.Client;
 import Components.Vehicle;
@@ -8,11 +8,12 @@ import Neighberhood.Inter.Relocate;
 import Neighberhood.Intra.LocalExchange;
 import Neighberhood.Intra.OptNeighborhood;
 import Neighberhood.NeighborhoodGenerator;
+import Utils.Random;
 
 import java.util.*;
 
 public class Algo {
-    public static List<Vehicle> recuit(List<Client> clients, List<Vehicle> initialSolution, float initialFitness, float temperature, float cooldown, int nitcooldown) {
+    public static List<Vehicle> recuit(List<Client> clients, List<Vehicle> initialSolution, float initialFitness, float temperature, float temperatureMin, float cooldown, int nitcooldown) {
 
         List<Vehicle> minSolution = (ArrayList<Vehicle>) ((ArrayList<Vehicle>) initialSolution).clone();
         float minFitness = initialFitness;
@@ -23,61 +24,85 @@ public class Algo {
 
         int ritcooldown = nitcooldown;
 
-        while (temperature > 0.0001) {
-            List<NeighborhoodGenerator> neighbors = new ArrayList<NeighborhoodGenerator>();
+        while (temperature > temperatureMin) {
+            NeighborhoodGenerator neighbor = null;
 
-            //Generate neighborhoods and choose a random one
-            for (int cptVehicule = 0; cptVehicule < currentSolution.size(); cptVehicule++) {
-                if (cptVehicule <= currentSolution.size() - 2) {
-                    for (int secondCptVehicle = cptVehicule + 1; secondCptVehicle < currentSolution.size(); secondCptVehicle++) {
-                        for (int firstIdx = 1; firstIdx < currentSolution.get(cptVehicule).getRoute().getClients().size() - 1; firstIdx++) {
-                            for (int secondIdx = 1; secondIdx < currentSolution.get(secondCptVehicle).getRoute().getClients().size() - 1; secondIdx++) {
+            // Generate neighborhoods and choose a random one
 
-                                CrossExchange crossExchange = new CrossExchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
-                                crossExchange.calculateNeighborhood();
-                                if (crossExchange.isGenerationSuccessed()) {
-                                    neighbors.add(crossExchange);
-                                }
-                                /*
-                                Relocate relocate = new Relocate(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
-                                relocate.calculateNeighborhood();
-                                if (relocate.isGenerationSuccessed()) {
-                                    neighbors.add(relocate);
-                                }
-
-
-                                Exchange exchange = new Exchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
-                                exchange.calculateNeighborhood();
-                                if (exchange.isGenerationSuccessed()) {
-                                    neighbors.add(exchange);
-                                }
-                                */
-                            }
-                        }
-                    }
-                }
-                /*
-                for (int firstIdx = 1; firstIdx < currentSolution.get(cptVehicule).getRoute().getClients().size() - 2; firstIdx++) {
-                    for (int secondIdx = firstIdx + 1; secondIdx < currentSolution.get(cptVehicule).getRoute().getClients().size() - 1; secondIdx++) {
-                        // Neighberhood.Intra.Relocate opt = new Neighberhood.Intra.Relocate(currentSolution, currentFitness, cptVehicule, firstIdx, secondIdx);
-                        LocalExchange localExchange = new LocalExchange(currentSolution, currentFitness, cptVehicule, firstIdx, secondIdx);
-                        localExchange.calculateNeighborhood();
-                        neighbors.add(localExchange);
-
-                        //
-                        Neighberhood.Intra.Relocate relocate = new Neighberhood.Intra.Relocate(currentSolution, currentFitness, cptVehicule, firstIdx, secondIdx);
-                        relocate.calculateNeighborhood();
-                        neighbors.add(relocate);
-
-                        OptNeighborhood opt = new OptNeighborhood(currentSolution, currentFitness, cptVehicule, firstIdx, secondIdx);
-                        opt.calculateNeighborhood();
-                        neighbors.add(opt);
-                    }
-                }
-                */
+            int cptVehicule = Random.randrange(0, currentSolution.size() - 1);
+            if(cptVehicule >= currentSolution.size() - 1) {
+                continue;
             }
 
-            NeighborhoodGenerator neighbor = neighbors.get((int)Math.floor(Math.random() * neighbors.size()));
+            int secondCptVehicle = Random.randrange(cptVehicule + 1, currentSolution.size());
+            if(secondCptVehicle >= currentSolution.size()) {
+                continue;
+            }
+
+            int firstIdx = Random.randrange(1,  currentSolution.get(cptVehicule).getRoute().getClients().size() - 1);
+            if(firstIdx >= currentSolution.get(cptVehicule).getRoute().getClients().size() - 1) {
+                continue;
+            }
+
+            int secondIdx = Random.randrange(1, currentSolution.get(secondCptVehicle).getRoute().getClients().size() - 1);
+            if(secondIdx >= currentSolution.get(secondCptVehicle).getRoute().getClients().size() - 1) {
+                continue;
+            }
+
+            int localFirstIdx = Random.randrange(1,  currentSolution.get(cptVehicule).getRoute().getClients().size() - 2);
+            if(localFirstIdx >= currentSolution.get(cptVehicule).getRoute().getClients().size() - 2) {
+                continue;
+            }
+
+            int localSecondIdx = Random.randrange(localFirstIdx + 1, currentSolution.get(cptVehicule).getRoute().getClients().size() - 1);
+            if(localSecondIdx >= currentSolution.get(cptVehicule).getRoute().getClients().size() - 1) {
+                continue;
+            }
+
+            int nmethod = Random.randrange(0, 6);
+            switch (nmethod) {
+                case 0:
+                    CrossExchange crossExchange = new CrossExchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
+                    crossExchange.calculateNeighborhood();
+                    if (!crossExchange.isGenerationSuccessed()) {
+                        continue;
+                    }
+                    neighbor = crossExchange;
+                    break;
+                case 1:
+                    Relocate relocate = new Relocate(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
+                    relocate.calculateNeighborhood();
+                    if (!relocate.isGenerationSuccessed()) {
+                        continue;
+                    }
+                    neighbor = relocate;
+                    break;
+                case 2:
+                    Exchange exchange = new Exchange(currentSolution, currentFitness, firstIdx, secondIdx, cptVehicule, secondCptVehicle);
+                    exchange.calculateNeighborhood();
+                    if (!exchange.isGenerationSuccessed()) {
+                        continue;
+                    }
+                    neighbor = exchange;
+                    break;
+                case 3:
+                    LocalExchange localExchange = new LocalExchange(currentSolution, currentFitness, cptVehicule, localFirstIdx, localSecondIdx);
+                    localExchange.calculateNeighborhood();
+                    neighbor = localExchange;
+                    break;
+                case 4:
+                    Neighberhood.Intra.Relocate localRelocate = new Neighberhood.Intra.Relocate(currentSolution, currentFitness, cptVehicule, localFirstIdx, localSecondIdx);
+                    localRelocate.calculateNeighborhood();
+                    neighbor = localRelocate;
+                    break;
+                case 5:
+                    OptNeighborhood opt = new OptNeighborhood(currentSolution, currentFitness, cptVehicule, localFirstIdx, localSecondIdx);
+                    opt.calculateNeighborhood();
+                    neighbor = opt;
+                    break;
+            }
+
+            assert neighbor != null;
 
             double delta = minFitness - neighbor.getFitness();
             if (delta > 0 || Math.random() < Math.exp(delta / temperature)) {
@@ -85,12 +110,13 @@ public class Algo {
                 minFitness = neighbor.getFitness();
             }
 
-            if(ritcooldown <= 0) {
+            if (ritcooldown <= 0) {
                 temperature = temperature * cooldown;
                 ritcooldown = nitcooldown;
             }
             ritcooldown--;
         }
+
         //  System.out.println("minFitness = " + minFitness);
         return minSolution;
     }

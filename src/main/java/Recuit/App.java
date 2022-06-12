@@ -1,4 +1,4 @@
-package TabuSearch;
+package Recuit;
 
 
 import Components.Client;
@@ -142,7 +142,7 @@ public class App {
         // TESTING RECUIT
         List<Route> routes = new ArrayList<>();
 
-        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.5f, 0.9f, 1000);
+        List<Vehicle> newSolution = Algo.recuit(clients, vehicules, totalDist, 0.5f, 0.0001f, 0.99f, 100000);
         for(Vehicle vehicle : newSolution) {
             routes.add(vehicle.getRoute());
         }

@@ -1,7 +1,5 @@
 package Graphics;
-import Components.Client;
 import Components.Route;
-import TabuSearch.App;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,10 +7,9 @@ import java.awt.*;
 
  import java.util.ArrayList;
  import java.util.List;
- import java.util.Random;
 
 
- public class InterfaceGraphique extends JPanel {
+public class InterfaceGraphique extends JPanel {
      private static int pointWidth = 20;
 
      List<Route> routes;

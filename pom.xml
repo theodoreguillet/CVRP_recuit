@@ -25,7 +25,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>Recuit.ConfigurationTest</mainClass>
+                            <mainClass>Recuit.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

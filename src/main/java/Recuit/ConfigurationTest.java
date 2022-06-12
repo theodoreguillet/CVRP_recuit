@@ -15,8 +15,7 @@ import java.util.concurrent.*;
 import static Recuit.App.getMinNumberOfFullVeh;
 
 public class ConfigurationTest {
-    private static ExecutorService executorService = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors() / 2, Runtime.getRuntime().availableProcessors(), 60,
-            TimeUnit.DAYS, new LinkedBlockingQueue<Runnable>());
+    private static ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     private static String fileName = "A3906";
     private static File file = new File("src/main/resources/results/Neighborhood/" + fileName + ".csv");
@@ -61,8 +60,7 @@ public class ConfigurationTest {
         int[] nitcooldownValues = { 1, 100, 1000, 10000, 100000 };
 
         String line = "F0; F; T; Tmin; C; nC; execTime";
-        System.out.println(line);
-        stream.println(line);
+        println(line);
 
         for(float temperature : temperatureValues) {
             for(float temperatureMin : temperatureMinValues) {
